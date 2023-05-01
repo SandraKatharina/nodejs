@@ -22,11 +22,11 @@
 
     <script type="text/javascript">
       const characterList = document.getElementById("character-list");
-      fetch("https://pokeapi.co/api/v2/pokemon/")
+      fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0")
         .then((response) => response.json())
         .then((data) => {
           characterList.innerHTML = data.results
-            .map((character) => `<li>${character.name}</li>`)
+            .map((character) => `<li>${character.name}, ${character.img}</li>`)
             .join("");
         })
         .catch((error) => console.error(error));
