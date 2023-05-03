@@ -18,18 +18,60 @@
   <body>
     <h1>All the Pokemons</h1>
     <h2>Characters</h2>
+    <button id="previous">previous</button>
     <ol id="character-list"></ol>
+    <button id="next">next</button>
 
     <script type="text/javascript">
       const characterList = document.getElementById("character-list");
-      fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0")
+      const url = "https://pokeapi.co/api/v2/pokemon";
+
+      const urlFetched = fetch(url)
         .then((response) => response.json())
         .then((data) => {
           characterList.innerHTML = data.results
-            .map((character) => `<li>${character.name}, ${character.img}</li>`)
+            .map((character) => `<li>${character.name}</li>`)
             .join("");
         })
         .catch((error) => console.error(error));
+
+      function paginated_fetch(
+        url = urlFetched,
+        offset = 20,
+        previousResponse = []
+      ) {
+        return fetch(`${url}&offset=${offset}`) // Append the page number to the base URL
+          .then((response) => response.json())
+          .then((newResponse) => {
+            const response = [...previousResponse, ...newResponse]; // Combine the two arrays
+
+            if (newResponse.length !== 0) {
+              page++;
+
+              return paginated_fetch(url, page, response);
+            }
+
+            return response;
+          });
+      }
+
+      const buttonNext = document.getElementById("next");
+      const buttonPrevious = document.getElementById("previous");
+
+      buttonNext.addEventListener("click", function () {
+        console.log("button clicked");
+        // fetch(url)
+        //   .then((response) => response.json())
+        //   .then((data) => {
+        //     characterList.innerHTML = data.results
+        //       .map((character) => `<li>${character.name}</li>`)
+        //       .join("");
+        //   });
+      });
+
+      buttonPrevious.addEventListener("click", function () {
+        console.log("button clicked");
+      });
     </script>
   </body>
 </html>
