@@ -19,59 +19,45 @@
     <h1>All the Pokemons</h1>
     <h2>Characters</h2>
     <button id="previous">previous</button>
-    <ol id="character-list"></ol>
     <button id="next">next</button>
+    <ul id="character-list"></ul>
 
     <script type="text/javascript">
       const characterList = document.getElementById("character-list");
-      const url = "https://pokeapi.co/api/v2/pokemon";
-
-      const urlFetched = fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          characterList.innerHTML = data.results
-            .map((character) => `<li>${character.name}</li>`)
-            .join("");
-        })
-        .catch((error) => console.error(error));
-
-      function paginated_fetch(
-        url = urlFetched,
-        offset = 20,
-        previousResponse = []
-      ) {
-        return fetch(`${url}&offset=${offset}`) // Append the page number to the base URL
-          .then((response) => response.json())
-          .then((newResponse) => {
-            const response = [...previousResponse, ...newResponse]; // Combine the two arrays
-
-            if (newResponse.length !== 0) {
-              page++;
-
-              return paginated_fetch(url, page, response);
-            }
-
-            return response;
-          });
-      }
 
       const buttonNext = document.getElementById("next");
       const buttonPrevious = document.getElementById("previous");
 
+      let nextURL;
+      let prevURL;
+
+      getPokemon("https://pokeapi.co/api/v2/pokemon");
+
       buttonNext.addEventListener("click", function () {
         console.log("button clicked");
-        // fetch(url)
-        //   .then((response) => response.json())
-        //   .then((data) => {
-        //     characterList.innerHTML = data.results
-        //       .map((character) => `<li>${character.name}</li>`)
-        //       .join("");
-        //   });
+        getPokemon(nextURL);
       });
 
       buttonPrevious.addEventListener("click", function () {
         console.log("button clicked");
+        getPokemon(prevURL);
       });
+
+      function getPokemon(url) {
+        fetch(url)
+          .then((response) => response.json())
+          .then((result) => {
+            console.log(result);
+
+            nextURL = result.next;
+            prevURL = result.previous;
+
+            characterList.innerHTML = "";
+            result.results.forEach((pokemon) => {
+              characterList.innerHTML += `<li>${pokemon.name} -${pokemon.url}</li>`;
+            });
+          });
+      }
     </script>
   </body>
 </html>
