@@ -1,0 +1,3 @@
+- print cities from world database to browser
+- create pagination
+- create buttons to go through pagination

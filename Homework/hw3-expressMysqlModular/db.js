@@ -11,6 +11,7 @@ const connection = mysql.createConnection({
 function getFiveCitiesBad(httpResponseObject) {
   const sql = `SELECT * FROM city LIMIT 5`;
   connection.query(sql, function (err, result) {
+    console.log(result);
     httpResponseObject.json(result);
   });
 }
