@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cities List</title>
+    <style>
+      body {
+        width: 500px;
+        background-color: cadetblue;
+        margin: 15px auto;
+        font-family: sans-serif;
+        line-height: 1.5;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        color: whitesmoke;
+        text-align: center;
+      }
+      .button {
+        background-color: burlywood;
+        border-color: burlywood;
+        margin: 0px 34px 0px;
+        padding: 10px;
+        border-width: 10px;
+        border-radius: 15px;
+        color: whitesmoke;
+        cursor: pointer;
+      }
+      .button:hover {
+        background-color: rgb(244, 47, 86);
+        border-color: rgb(244, 47, 86);
+      }
+      .button:disabled {
+        background-color: cornflowerblue;
+        border-color: cornflowerblue;
+        cursor: default;
+      }
+      #citiesList {
+        list-style: none;
+        text-align: match-parent;
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cities of the World</h1>
+    <button class="button" id="previous">PREVIOUS</button>
+    <button class="button" id="next">NEXT</button>
+    <div id="citiesList"></div>
+    <script>
+      const citiesList = document.querySelector("#citiesList");
+      const buttonPrev = document.querySelector("#previous");
+      const buttonNext = document.querySelector("#next");
+
+      let offset = 0;
+      const limit = 20;
+      const mainUrl = "http://localhost:4000";
+
+      getCity(`${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`);
+
+      buttonNext.addEventListener("click", function () {
+        offset += limit;
+        getCity(
+          `${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`
+        );
+      });
+      buttonPrev.addEventListener("click", function () {
+        offset -= limit;
+        getCity(
+          `${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`
+        );
+      });
+
+      function getCity(url) {
+        fetch(url)
+          .then((response) => response.json())
+          .then((result) => {
+            console.log(result);
+
+            const hasNext = result.length === limit;
+
+            citiesList.innerHTML = "";
+            result.forEach(function (city) {
+              citiesList.innerHTML += `<li>${city.ID}– ${city.Name}</li>`;
+            });
+
+            buttonNext.disabled = !hasNext;
+            buttonPrev.disabled = offset === 0;
+          });
+      }
+    </script>
+  </body>
+</html>
