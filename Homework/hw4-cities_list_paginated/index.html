@@ -52,42 +52,66 @@
       const buttonPrev = document.querySelector("#previous");
       const buttonNext = document.querySelector("#next");
 
-      let offset = 0;
-      const limit = 20;
-      const mainUrl = "http://localhost:4000";
+      // let offset = 0;
+      // const limit = 20;
+      // const mainUrl = "http://localhost:4000";
 
-      getCity(`${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`);
+      let nextURL = null;
+      let prevURL = null;
+
+      // getCity(`${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`);
 
       buttonNext.addEventListener("click", function () {
-        offset += limit;
-        getCity(
-          `${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`
-        );
+        // offset += limit;
+        // getCity(
+        //   `${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`);
+        getCity(nextURL);
       });
+
       buttonPrev.addEventListener("click", function () {
-        offset -= limit;
-        getCity(
-          `${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`
-        );
+        // offset -= limit;
+        // getCity(
+        //   `${mainUrl}/getCitiesOfTheWorld?offset=${offset}&limit=${limit}`);
+        getCity(prevURL);
       });
 
       function getCity(url) {
-        fetch(url)
+        const options = {
+          method: "GET",
+        };
+
+        fetch(url, options)
           .then((response) => response.json())
           .then((result) => {
             console.log(result);
 
-            const hasNext = result.length === limit;
+            nextURL = result.next;
+            prevURL = result.previous;
+
+            if (nextURL) {
+              buttonNext.disabled = false;
+            } else {
+              buttonNext.disabled = true;
+            }
+
+            if (prevURL) {
+              buttonPrev.disabled = false;
+            } else {
+              buttonPrev.disabled = true;
+            }
+
+            // const hasNext = result.length === limit;
 
             citiesList.innerHTML = "";
             result.forEach(function (city) {
               citiesList.innerHTML += `<li>${city.ID}– ${city.Name}</li>`;
             });
 
-            buttonNext.disabled = !hasNext;
-            buttonPrev.disabled = offset === 0;
+            // buttonNext.disabled = !hasNext;
+            // buttonPrev.disabled = offset === 0;
           });
       }
+      getCity("http://localhost:4000/cities");
     </script>
   </body>
 </html>

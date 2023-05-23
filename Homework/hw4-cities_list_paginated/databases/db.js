@@ -8,6 +8,13 @@ const connection = mysql.createConnection({
   database: "world",
 });
 
+function getCitiesCount(callback) {
+  const sql = `SELECT count(*) AS cityCount FROM city`;
+  connection.query(sql, function (err, result) {
+    callback(result[0].cityCount);
+  });
+}
+
 function getCitiesWithLimitAndOffset(limit, offset, callback) {
   connection.query(
     `SELECT * FROM city LIMIT ${limit} OFFSET ${offset}`,
@@ -19,4 +26,5 @@ function getCitiesWithLimitAndOffset(limit, offset, callback) {
 
 module.exports = {
   getCitiesWithLimitAndOffset,
+  getCitiesCount,
 };

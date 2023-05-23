@@ -1,4 +1,4 @@
-const db = require("./services/db");
+const db = require("./databases/db");
 
 const express = require("express");
 const cors = require("cors");
